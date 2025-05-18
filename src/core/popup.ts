@@ -24,6 +24,7 @@ import { debounce } from '../utils/debounce';
 import { sanitizeFileName } from '../utils/string-utils';
 import { saveFile } from '../utils/file-utils';
 import { translatePage, getMessage, setupLanguageAndDirection } from '../utils/i18n';
+import { setupWindowListeners } from './api';
 
 interface ReaderModeResponse {
 	success: boolean;
@@ -168,7 +169,12 @@ async function initializeExtension(tabId: number) {
 		// Setup message listeners
 		setupMessageListeners();
 
+	
+
 		await checkHighlighterModeState(tabId);
+
+		// Setup window listeners
+		setupWindowListeners();
 
 		return true;
 	} catch (error) {
@@ -504,7 +510,7 @@ async function initializeUI() {
 	}
 }
 
-function showError(messageKey: string): void {
+export function showError(messageKey: string): void {
 	const errorMessage = document.querySelector('.error-message') as HTMLElement;
 	const clipper = document.querySelector('.clipper') as HTMLElement;
 
@@ -533,7 +539,7 @@ function logError(message: string, error?: any): void {
 	showError(message);
 }
 
-async function waitForInterpreter(interpretBtn: HTMLButtonElement): Promise<void> {
+export async function waitForInterpreter(interpretBtn: HTMLButtonElement): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const checkProcessing = () => {
 			if (!interpretBtn.classList.contains('processing')) {
